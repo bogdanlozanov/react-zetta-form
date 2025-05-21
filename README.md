@@ -1,54 +1,119 @@
-# React + TypeScript + Vite
+# React Zetta - Dynamic JSON-Driven Form Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React Single Page Application (SPA) that dynamically generates interactive forms from a JSON input.  
+Supports nested groups, dynamic visibility, validation rules, API auto-fill (mocked), and outputs filled data as JSON.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Dynamic form rendering** based on JSON schema input  
+- Supports field types: Text, Textarea, Dropdown, Checkbox, Radio, and Validated Text  
+- Nested groups with visual encapsulation  
+- Dynamic visibility and validation rules based on other fields  
+- Mocked API integration for autofill functionality  
+- Form submission outputs structured JSON preserving hierarchy  
+- Responsive and user-friendly UI built with MUI  
+- Auto-save progress to localStorage (bonus feature)  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
+## Tech Stack
+
+- React 19 + TypeScript  
+- Vite (build tool)  
+- react-hook-form (form management)  
+- zod (validation schema)  
+- @hookform/resolvers (zod integration)  
+- axios (API requests)  
+- msw (mock service worker for API mocking)  
+- MUI (UI components)  
+- clsx (conditional classNames)  
+- Vitest + React Testing Library (unit testing)
+
+---
+
+## Getting Started
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Run tests
+
+```bash
+npm run test
+```
+
+---
+
+## JSON Input Format
+
+Paste JSON describing the form layout in the top input field. Example:
+
+```json
+{
+  "fields": [
+    {
+      "name": "fullName",
+      "label": "Full Name",
+      "type": "text",
+      "validation": { "required": true }
     },
-  },
-})
+    {
+      "name": "contactType",
+      "label": "Contact Type",
+      "type": "dropdown",
+      "options": ["Email", "Phone"]
+    },
+    {
+      "group": "contactDetails",
+      "visibleIf": { "contactType": "Email" },
+      "fields": [
+        { "name": "email", "label": "Email Address", "type": "text", "validation": { "pattern": "email" } }
+      ]
+    }
+  ]
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project Structure
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
 ```
+src/
+├── api/              # API mocks and helpers
+├── components/       # Reusable UI components
+├── features/         # Form builder logic and components
+├── hooks/            # Custom hooks
+├── lib/              # Utility functions
+├── types/            # TypeScript types
+├── App.tsx
+└── main.tsx
+```
+
+---
+
+## Notes
+
+- API calls are mocked with MSW.  
+- Form state is managed with react-hook-form for optimal performance.  
+- Validation schemas are dynamically generated with Zod.  
+- UI uses Material UI components for accessibility and polish.  
+
+---
+
+## License
+
+MIT
