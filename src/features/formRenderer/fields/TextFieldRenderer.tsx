@@ -1,0 +1,34 @@
+import { Controller, useFormContext } from "react-hook-form";
+import { TextField, Box } from "@mui/material";
+import { FormErrorMessage } from "../../../components/FormErrorMessage";
+import type { BaseField } from "../../../schemas/formSchema";
+
+type Props = {
+  field: BaseField;
+};
+
+/**
+ * Renders a standard text input field.
+ */
+export const TextFieldRenderer = ({ field }: Props) => {
+  const { control } = useFormContext();
+
+  return (
+    <Controller
+      name={field.name}
+      control={control}
+      render={({ field: controllerField, fieldState }) => (
+        <Box>
+          <TextField
+            {...controllerField}
+            label={field.label}
+            fullWidth
+            variant="outlined"
+            error={!!fieldState.error}
+          />
+          <FormErrorMessage message={fieldState.error?.message} />
+        </Box>
+      )}
+    />
+  );
+};
