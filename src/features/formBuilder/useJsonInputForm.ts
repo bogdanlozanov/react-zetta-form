@@ -1,40 +1,15 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { parseAndValidateJson } from "../../lib/parseAndValidateJson";
+import { jsonInputSchema, defaultJsonInput, type JsonInputFormValues } from "../../schemas/jsonInputSchema";
 
-const defaultJson = JSON.stringify(
-  {
-    fields: [
-      { name: "email", label: "Email", type: "text" }
-    ]
-  },
-  null,
-  2
-);
-
-// Validate the input JSON string using Zod and parse helper
-const schema = z.object({
-  jsonInput: z
-    .string()
-    .min(1, "JSON input is required")
-    .superRefine((val, ctx) => {
-      const result = parseAndValidateJson(val);
-      if (!result.valid) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: result.error
-        });
-      }
-    })
-});
-
-
+/**
+ * Initializes the JSON input form with validation and default values.
+ */
 export const useJsonInputForm = () => {
-  return useForm({
-    resolver: zodResolver(schema),
+  return useForm<JsonInputFormValues>({
+    resolver: zodResolver(jsonInputSchema),
     defaultValues: {
-      jsonInput: defaultJson
+      jsonInput: defaultJsonInput
     },
     mode: "onChange"
   });
