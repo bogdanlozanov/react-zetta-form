@@ -7,7 +7,8 @@ import {
 } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormErrorMessage } from "../../../components/FormErrorMessage";
-import type { RadioField } from "../../../schemas/formSchema";
+import type { FormData, RadioField } from "../../../schemas/formSchema";
+import { getValidationRules } from "../../../lib/getValidationRules";
 
 type Props = {
   field: RadioField;
@@ -17,7 +18,7 @@ type Props = {
  * Renders a radio button group.
  */
 export const RadioFieldRenderer = ({ field }: Props) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext<FormData>();
 
   return (
     <FormControl component="fieldset" fullWidth>
@@ -25,6 +26,9 @@ export const RadioFieldRenderer = ({ field }: Props) => {
       <Controller
         name={field.name}
         control={control}
+        rules={getValidationRules({
+          required: field.required
+        })}
         render={({ field: controllerField, fieldState }) => (
           <>
             <RadioGroup

@@ -3,11 +3,11 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  type SelectChangeEvent
 } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormErrorMessage } from "../../../components/FormErrorMessage";
-import type { DropdownField } from "../../../schemas/formSchema";
+import type { DropdownField, FormData } from "../../../schemas/formSchema";
+import { getValidationRules } from "../../../lib/getValidationRules";
 
 type Props = {
   field: DropdownField;
@@ -17,7 +17,7 @@ type Props = {
  * Renders a dropdown/select field.
  */
 export const DropdownFieldRenderer = ({ field }: Props) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext<FormData>();
 
   return (
     <FormControl fullWidth variant="outlined">
@@ -26,13 +26,16 @@ export const DropdownFieldRenderer = ({ field }: Props) => {
       <Controller
         name={field.name}
         control={control}
+        rules={getValidationRules({
+          required: field.required
+        })}
         render={({ field: controllerField, fieldState }) => (
           <>
             <Select
               labelId={`${field.name}-label`}
               {...controllerField}
               value={controllerField.value || ""}
-              onChange={(e: SelectChangeEvent) => controllerField.onChange(e.target.value)}
+              onChange={(e) => controllerField.onChange(e.target.value)}
               label={field.label}
               error={!!fieldState.error}
             >

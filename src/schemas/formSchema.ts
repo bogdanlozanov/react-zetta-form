@@ -1,91 +1,107 @@
 import { z } from "zod";
 
-// ENUM: Reusable field types
+// Field types enum
 export const fieldTypes = z.enum([
   "text",
   "textarea",
   "dropdown",
   "checkbox",
-  "radio",
-  "validatedText"
+  "radio"
 ]);
 
-// Base schema shared by all fields
-const base = z.object({
-  name: z.string().min(1, "Missing field name"),
-  label: z.string().min(1, "Missing field label"),
+// Shared validation rules (optional per field)
+export const validationSchema = z.object({
+  pattern: z.string().optional(),
+  minLength: z.number().optional(),
+  maxLength: z.number().optional()
+});
+
+// BaseField (for all input types)
+const baseFieldShape = {
+  name: z.string(),
+  label: z.string(),
+  type: fieldTypes,
   required: z.boolean().optional(),
-  validation: z
-    .object({
-      pattern: z.string().optional(),
-      dependsOn: z.string().optional(),
-      dependsOnValue: z.string().optional()
-    })
-    .optional()
+};
+
+export const textFieldSchema = z.object({
+  ...baseFieldShape,
+  type: z.literal("text"),
+  validation: validationSchema.optional()
 });
 
-// Discriminated field types
-const textField = base.extend({ type: z.literal("text") });
-const textareaField = base.extend({ type: z.literal("textarea") });
-const checkboxField = base.extend({ type: z.literal("checkbox") });
-const validatedTextField = base.extend({ type: z.literal("validatedText") });
+export const textareaFieldSchema = z.object({
+  ...baseFieldShape,
+  type: z.literal("textarea"),
+  validation: validationSchema.optional()
+});
 
-export type DropdownField = z.infer<typeof dropdownField>;
-export type RadioField = z.infer<typeof radioField>;
+export const checkboxFieldSchema = z.object({
+  ...baseFieldShape,
+  type: z.literal("checkbox"),
+});
 
-const dropdownField = base.extend({
+export const dropdownFieldSchema = z.object({
+  ...baseFieldShape,
   type: z.literal("dropdown"),
-  options: z.array(z.string()).min(1, "Dropdown requires options")
+  options: z.array(z.string()).min(1, "Dropdown must have at least one option")
 });
 
-const radioField = base.extend({
+export const radioFieldSchema = z.object({
+  ...baseFieldShape,
   type: z.literal("radio"),
-  options: z.array(z.string()).min(1, "Radio group requires options")
+  options: z.array(z.string()).min(1, "Radio group must have at least one option")
 });
 
-// Union of all base fields
-export const baseFieldSchema = z.discriminatedUnion("type", [
-  textField,
-  textareaField,
-  checkboxField,
-  validatedTextField,
-  dropdownField,
-  radioField
+export const baseFieldSchema = z.union([
+  textFieldSchema,
+  textareaFieldSchema,
+  checkboxFieldSchema,
+  dropdownFieldSchema,
+  radioFieldSchema
 ]);
 
 export type BaseField = z.infer<typeof baseFieldSchema>;
+export type TTextField = z.infer<typeof textFieldSchema>;
+export type TextareaField = z.infer<typeof textareaFieldSchema>;
+export type CheckboxField = z.infer<typeof checkboxFieldSchema>;
+export type DropdownField = z.infer<typeof dropdownFieldSchema>;
+export type RadioField = z.infer<typeof radioFieldSchema>;
+export type ValidationFieldRules = z.infer<typeof validationSchema>;
 
-// Group schema (recursive)
-export type FormField = BaseField | {
+
+// Recursive GroupField
+export type GroupField = {
   group: string;
-  visibleIf?: {
-    field: string;
-    value: string;
-  };
+  dependsOn?: string;
+  dependsOnValue?: string;
   fields: FormField[];
 };
 
-// Recursive Zod schema for groups
-let formFieldSchema: z.ZodType<FormField>;
+export type FormField = BaseField | GroupField;
 
-const groupFieldSchema: z.ZodType<FormField> = z.object({
-  group: z.string(),
-  visibleIf: z
-    .object({
-      field: z.string(),
-      value: z.string()
-    })
-    .optional(),
-  fields: z.lazy(() => z.array(formFieldSchema))
-});
+export const groupFieldSchema: z.ZodType<GroupField> = z.lazy(() =>
+  z.object({
+    group: z.string(),
+    dependsOn: z.string().optional(),
+    dependsOnValue: z.string().optional(),
+    fields: z.array(formFieldSchema)
+  })
+);
 
-formFieldSchema = z.union([baseFieldSchema, groupFieldSchema]);
+// Final form field union
+export let formFieldSchema: z.ZodType<FormField> = z.union([
+  baseFieldSchema,
+  groupFieldSchema
+]);
 
-// Final form schema
+// Full form schema
 export const formSchema = z.object({
-  fields: z.array(formFieldSchema).min(1, "At least one field is required")
+  fields: z.array(formFieldSchema)
 });
 
+
+// Output data structure
 export type FormSchema = z.infer<typeof formSchema>;
 
 export type FormData = {

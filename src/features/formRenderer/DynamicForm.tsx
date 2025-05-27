@@ -15,7 +15,7 @@ type Props = {
  * Renders the full form dynamically based on parsed JSON schema.
  */
 export const DynamicForm = ({ schema, onSubmit }: Props) => {
-  const methods = useForm({ mode: "onChange" });
+  const methods = useForm<FormData>({ mode: "onChange" });
 
   const handleSubmit = methods.handleSubmit(onSubmit);
 

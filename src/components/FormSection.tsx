@@ -1,16 +1,21 @@
 import { Paper, useTheme } from "@mui/material";
 import type { ReactNode } from "react";
 
-export const FormSection = ({ children }: { children: ReactNode }) => {
+type Props = {
+  children: ReactNode;
+};
+
+export const FormSection = ({ children }: Props) => {
   const theme = useTheme();
 
   return (
     <Paper
       elevation={1}
       sx={{
-        p: theme.spacing(4),
+        backgroundColor: theme.palette.grey[50],
+        padding: theme.spacing(4),
         borderRadius: theme.shape.borderRadius,
-        bgcolor: theme.palette.background.paper
+        marginTop: theme.spacing(2),
       }}
     >
       {children}

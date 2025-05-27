@@ -5,23 +5,27 @@ import {
   Box
 } from "@mui/material";
 import { FormErrorMessage } from "../../../components/FormErrorMessage";
-import type { BaseField } from "../../../schemas/formSchema";
+import type { CheckboxField, FormData } from "../../../schemas/formSchema";
+import { getValidationRules } from "../../../lib/getValidationRules";
 
 type Props = {
-  field: BaseField;
+  field: CheckboxField;
 };
 
 /**
  * Renders a checkbox field.
  */
 export const CheckboxFieldRenderer = ({ field }: Props) => {
-  const { control } = useFormContext();
+  const { control } = useFormContext<FormData>();
 
   return (
     <Box>
       <Controller
         name={field.name}
         control={control}
+        rules={getValidationRules({
+          required: field.required
+        })}
         render={({ field: controllerField, fieldState }) => (
           <>
             <FormControlLabel

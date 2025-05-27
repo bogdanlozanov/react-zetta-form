@@ -1,12 +1,14 @@
-import type { FormField } from "../../schemas/formSchema";
+import { fieldTypes, type FormData, type FormField } from "../../schemas/formSchema";
 import { TextFieldRenderer } from "./fields/TextFieldRenderer";
 import { TextareaFieldRenderer } from "./fields/TextareaFieldRenderer";
 import { CheckboxFieldRenderer } from "./fields/CheckboxFieldRenderer";
 import { DropdownFieldRenderer } from "./fields/DropdownFieldRenderer";
 import { RadioFieldRenderer } from "./fields/RadioFieldRenderer";
-import { ValidatedTextFieldRenderer } from "./fields/ValidatedTextFieldRenderer";
 import { FormSection } from "../../components/FormSection";
 import { SectionTitle } from "../../components/SectionTitle";
+import { useWatch } from "react-hook-form";
+import { isGroupVisible } from "../../lib/isGroupVisible";
+import { Stack } from "@mui/material";
 
 type Props = {
   field: FormField;
@@ -16,36 +18,33 @@ type Props = {
  * Renders the appropriate field component based on its type or group.
  */
 export const FieldRenderer = ({ field }: Props) => {
+  const values = useWatch<FormData>();
   // GROUP field (recursive render)
   if ("group" in field) {
-    const shouldShow = true; // TODO: implement visibleIf logic later
-
-    if (!shouldShow) return null;
-
-    return (
+    return isGroupVisible(field, values) ? (
       <FormSection>
         <SectionTitle text={field.group} level="h4" />
-        {field.fields.map((subField, idx) => (
-          <FieldRenderer key={idx} field={subField} />
-        ))}
+        <Stack spacing={2}>
+          {field.fields.map((subField, idx) => (
+            <FieldRenderer key={idx} field={subField} />
+          ))}
+        </Stack>
       </FormSection>
-    );
+    ) : null;
   }
 
   // BASE field (switch by type)
   switch (field.type) {
-    case "text":
+    case fieldTypes.Values.text:
       return <TextFieldRenderer field={field} />;
-    case "textarea":
+    case fieldTypes.Values.textarea:
       return <TextareaFieldRenderer field={field} />;
-    case "dropdown":
+    case fieldTypes.Values.dropdown:
       return <DropdownFieldRenderer field={field} />;
-    case "checkbox":
+    case fieldTypes.Values.checkbox:
       return <CheckboxFieldRenderer field={field} />;
-    case "radio":
+    case fieldTypes.Values.radio:
       return <RadioFieldRenderer field={field} />;
-    case "validatedText":
-      return <ValidatedTextFieldRenderer field={field} />;
     default:
       return null;
   }
