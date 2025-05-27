@@ -1,4 +1,4 @@
-import { useForm, FormProvider } from "react-hook-form";
+import { FormProvider, type UseFormReturn } from "react-hook-form";
 import { Stack } from "@mui/material";
 import type { FormSchema, FormData } from "../../schemas/formSchema";
 import { FieldRenderer } from "./FieldRenderer";
@@ -9,27 +9,25 @@ import { SectionTitle } from "../../components/SectionTitle";
 type Props = {
   schema: FormSchema;
   onSubmit: (data: FormData) => void;
+  form: UseFormReturn<FormData, any, FormData>
 };
 
 /**
  * Renders the full form dynamically based on parsed JSON schema.
  */
-export const DynamicForm = ({ schema, onSubmit }: Props) => {
-  const methods = useForm<FormData>({ mode: "onChange" });
+export const DynamicForm = ({ schema, onSubmit, form }: Props) => {
 
-  const handleSubmit = methods.handleSubmit(onSubmit);
+  const handleSubmit = form.handleSubmit(onSubmit);
 
   return (
     <FormSection>
-        <SectionTitle text="Generated Form" level="h3" />
-      <FormProvider {...methods}>
-
+      <FormProvider {...form}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={3}>
+            <SectionTitle text={schema.group} level="h3" />
             {schema.fields.map((field, idx) => (
               <FieldRenderer key={idx} field={field} />
             ))}
-
             <PrimaryButton type="submit">Submit</PrimaryButton>
           </Stack>
         </form>

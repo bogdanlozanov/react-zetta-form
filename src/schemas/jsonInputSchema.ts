@@ -19,8 +19,36 @@ export const jsonInputSchema = z.object({
 
 export const defaultJsonInput = JSON.stringify(
   {
-    fields: [
-      { name: "email", label: "Email", type: "text" }
+    "group": "Basic Info",
+    "fields": [
+      {
+        "name": "firstName",
+        "label": "First Name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "bio",
+        "label": "Bio",
+        "type": "textarea"
+      },
+      {
+        "name": "country",
+        "label": "Country",
+        "type": "dropdown",
+        "options": ["USA", "Canada", "Germany"]
+      },
+      {
+        "name": "terms",
+        "label": "Accept Terms",
+        "type": "checkbox"
+      },
+      {
+        "name": "gender",
+        "label": "Gender",
+        "type": "radio",
+        "options": ["Male", "Female", "Other"]
+      }
     ]
   },
   null,

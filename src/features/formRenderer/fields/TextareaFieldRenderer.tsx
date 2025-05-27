@@ -33,6 +33,7 @@ export const TextareaFieldRenderer = ({ field }: Props) => {
             maxRows={10}
             variant="outlined"
             error={!!fieldState.error}
+            value={controllerField.value ?? ""}
           />
           <FormErrorMessage message={fieldState.error?.message} />
         </Box>

@@ -60,61 +60,162 @@ npm run test
 
 ## JSON Input Format
 
-Paste JSON describing the form layout in the top input field. Example:
+Paste JSON describing the form layout in the top input field. Examples:
 
+## 1. Flat Form (group: "Basic Info")
 ```json
 {
+  "group": "Basic Info",
   "fields": [
     {
-      "name": "fullName",
-      "label": "Full Name",
+      "name": "firstName",
+      "label": "First Name",
       "type": "text",
-      "validation": { "required": true }
+      "required": true
     },
     {
-      "name": "contactType",
-      "label": "Contact Type",
+      "name": "bio",
+      "label": "Bio",
+      "type": "textarea"
+    },
+    {
+      "name": "country",
+      "label": "Country",
       "type": "dropdown",
-      "options": ["Email", "Phone"]
+      "options": ["USA", "Canada", "Germany"]
     },
     {
-      "group": "contactDetails",
-      "visibleIf": { "contactType": "Email" },
+      "name": "terms",
+      "label": "Accept Terms",
+      "type": "checkbox"
+    },
+    {
+      "name": "gender",
+      "label": "Gender",
+      "type": "radio",
+      "options": ["Male", "Female", "Other"]
+    }
+  ]
+}
+```
+
+## 2. Single Nested Group (group: "Contact Form")
+```json
+{
+  "group": "Contact Form",
+  "fields": [
+    {
+      "name": "email",
+      "label": "Email Address",
+      "type": "text",
+      "required": true
+    },
+    {
+      "group": "Address Information",
       "fields": [
-        { "name": "email", "label": "Email Address", "type": "text", "validation": { "pattern": "email" } }
+        {
+          "name": "street",
+          "label": "Street",
+          "type": "text"
+        },
+        {
+          "name": "city",
+          "label": "City",
+          "type": "text"
+        },
+        {
+          "name": "zip",
+          "label": "Zip Code",
+          "type": "text",
+          "validation": {
+            "pattern": "^[0-9]{5}$"
+          }
+        }
       ]
     }
   ]
 }
 ```
 
----
-
-## Project Structure
-
+## 3. Deeply Nested (group: "User Registration")
+```json
+{
+  "group": "User Registration",
+  "fields": [
+    {
+      "name": "userType",
+      "label": "User Type",
+      "type": "dropdown",
+      "options": ["INDIVIDUAL", "BUSINESS"]
+    },
+    {
+      "group": "Personal Details",
+      "dependsOn": "userType",
+      "dependsOnValue": "INDIVIDUAL",
+      "fields": [
+        {
+          "name": "fullName",
+          "label": "Full Name",
+          "type": "text"
+        },
+        {
+          "group": "Identification",
+          "fields": [
+            {
+              "name": "idType",
+              "label": "Identification Type",
+              "type": "dropdown",
+              "options": ["PERSONAL ID", "PASSPORT"]
+            },
+            {
+              "name": "idNumber",
+              "label": "ID Number",
+              "type": "text",
+              "validation": {
+                "pattern": "^[A-Z0-9]{6,12}$"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Business Details",
+      "dependsOn": "userType",
+      "dependsOnValue": "BUSINESS",
+      "fields": [
+        {
+          "name": "companyName",
+          "label": "Company Name",
+          "type": "text"
+        },
+        {
+          "group": "Registration Info",
+          "fields": [
+            {
+              "name": "vatNumber",
+              "label": "VAT Number",
+              "type": "text"
+            },
+            {
+              "group": "Legal Rep",
+              "fields": [
+                {
+                  "name": "repName",
+                  "label": "Representative Name",
+                  "type": "text"
+                },
+                {
+                  "name": "repEmail",
+                  "label": "Representative Email",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
 ```
-src/
-├── api/              # API mocks and helpers
-├── components/       # Reusable UI components
-├── features/         # Form builder logic and components
-├── hooks/            # Custom hooks
-├── lib/              # Utility functions
-├── types/            # TypeScript types
-├── App.tsx
-└── main.tsx
-```
-
----
-
-## Notes
-
-- API calls are mocked with MSW.  
-- Form state is managed with react-hook-form for optimal performance.  
-- Validation schemas are dynamically generated with Zod.  
-- UI uses Material UI components for accessibility and polish.  
-
----
-
-## License
-
-MIT

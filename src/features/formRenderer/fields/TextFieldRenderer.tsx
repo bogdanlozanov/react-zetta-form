@@ -30,6 +30,7 @@ export const TextFieldRenderer = ({ field }: Props) => {
             fullWidth
             variant="outlined"
             error={!!fieldState.error}
+            value={controllerField.value ?? ""}
           />
           <FormErrorMessage message={fieldState.error?.message} />
         </Box>

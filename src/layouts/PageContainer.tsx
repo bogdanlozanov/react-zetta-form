@@ -5,7 +5,7 @@ export const PageContainer = ({ children }: { children: ReactNode }) => {
   const theme = useTheme();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="xl">
       <Box
         sx={{
           py: theme.spacing(6),

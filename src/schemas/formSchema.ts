@@ -97,6 +97,7 @@ export let formFieldSchema: z.ZodType<FormField> = z.union([
 
 // Full form schema
 export const formSchema = z.object({
+  group: z.string(),
   fields: z.array(formFieldSchema)
 });
 
