@@ -24,12 +24,8 @@ Supports nested groups, dynamic visibility, validation rules, API auto-fill (moc
 - Vite (build tool)  
 - react-hook-form (form management)  
 - zod (validation schema)  
-- @hookform/resolvers (validation schema integration)  
-- axios (API requests)  
-- msw (mock service worker for API mocking)  
-- MUI (UI components)  
-- @emotion/react, @emotion/styled (styling engine for MUI)  
-- clsx (conditional classNames)  
+- @hookform/resolvers (validation schema integration) 
+- MUI (UI components)   
 - Vitest + React Testing Library (unit testing)
 
 ---
