@@ -219,3 +219,58 @@ Paste JSON describing the form layout in the top input field. Examples:
   ]
 }
 ```
+
+## 4. Autofill VAT (group: "Company Autofill")
+```json
+{
+  "group": "Company Autofill",
+  "fields": [
+    {
+      "name": "companyName",
+      "label": "Company Name",
+      "type": "text"
+    },
+    {
+      "name": "vatNumber",
+      "label": "VAT Number",
+      "type": "text",
+      "autoFill": {
+        "api": "fetchVatInfo",
+        "params": ["companyName"]
+      }
+    }
+  ]
+}
+```
+## 5 Autofill User Info (group: "User Info Autofill")
+```json
+{
+  "group": "User Info Autofill",
+  "fields": [
+    {
+      "name": "firstName",
+      "label": "First Name",
+      "type": "text"
+    },
+    {
+      "name": "bio",
+      "label": "Biography",
+      "type": "textarea",
+      "autoFill": {
+        "api": "fetchUserInfo",
+        "params": ["firstName"]
+      }
+    },
+    {
+      "name": "gender",
+      "label": "Gender",
+      "type": "dropdown",
+      "options": ["Male", "Female", "Other"],
+      "autoFill": {
+        "api": "fetchUserInfo",
+        "params": ["firstName"]
+      }
+    }
+  ]
+}
+```

@@ -34,6 +34,7 @@ export const TextareaFieldRenderer = ({ field }: Props) => {
             variant="outlined"
             error={!!fieldState.error}
             value={controllerField.value ?? ""}
+            disabled={!!field.autoFill}
           />
           <FormErrorMessage message={fieldState.error?.message} />
         </Box>

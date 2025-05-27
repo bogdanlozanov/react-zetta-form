@@ -32,6 +32,7 @@ export const CheckboxFieldRenderer = ({ field }: Props) => {
               control={
                 <Checkbox
                   {...controllerField}
+                  disabled={!!field.autoFill}
                   checked={!!controllerField.value}
                   onChange={(e) => controllerField.onChange(e.target.checked)}
                 />

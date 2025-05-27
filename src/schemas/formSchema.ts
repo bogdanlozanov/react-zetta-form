@@ -22,6 +22,12 @@ const baseFieldShape = {
   label: z.string(),
   type: fieldTypes,
   required: z.boolean().optional(),
+  autoFill: z
+  .object({
+    api: z.string(),
+    params: z.array(z.string()),
+  })
+  .optional()
 };
 
 export const textFieldSchema = z.object({

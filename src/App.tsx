@@ -4,6 +4,7 @@ import { PageContainer } from "./layouts/PageContainer";
 import { SectionTitle } from "./components/SectionTitle";
 import { useAppLogic } from "./hooks/useAppLogic";
 import { OutputPreview } from "./features/formOutput/OutputPreview";
+import { FormProvider } from "react-hook-form";
 
 function App() {
   const { form, formSchema, formOutput, handleSubmit, renderedForm } = useAppLogic();
@@ -14,7 +15,9 @@ function App() {
       <FormBuilderInput control={form.control} />
 
       {formSchema && (
-        <DynamicForm schema={formSchema} onSubmit={handleSubmit} form={renderedForm} />
+        <FormProvider {...renderedForm}>
+          <DynamicForm schema={formSchema} onSubmit={handleSubmit} form={renderedForm} />
+        </FormProvider>
       )}
 
       {formOutput && (

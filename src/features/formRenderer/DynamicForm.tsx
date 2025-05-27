@@ -1,10 +1,11 @@
-import { FormProvider, type UseFormReturn } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 import { Stack } from "@mui/material";
 import type { FormSchema, FormData } from "../../schemas/formSchema";
 import { FieldRenderer } from "./FieldRenderer";
 import { PrimaryButton } from "../../components/PrimaryButton";
 import { FormSection } from "../../components/FormSection";
 import { SectionTitle } from "../../components/SectionTitle";
+import { useAutofillHandler } from "./hooks/useAutofillHandler";
 
 type Props = {
   schema: FormSchema;
@@ -18,10 +19,10 @@ type Props = {
 export const DynamicForm = ({ schema, onSubmit, form }: Props) => {
 
   const handleSubmit = form.handleSubmit(onSubmit);
+  useAutofillHandler(schema.fields);
 
   return (
     <FormSection>
-      <FormProvider {...form}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={3}>
             <SectionTitle text={schema.group} level="h3" />
@@ -31,7 +32,6 @@ export const DynamicForm = ({ schema, onSubmit, form }: Props) => {
             <PrimaryButton type="submit">Submit</PrimaryButton>
           </Stack>
         </form>
-      </FormProvider>
     </FormSection>
   );
 };

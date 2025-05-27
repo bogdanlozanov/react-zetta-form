@@ -38,6 +38,7 @@ export const DropdownFieldRenderer = ({ field }: Props) => {
               onChange={(e) => controllerField.onChange(e.target.value)}
               label={field.label}
               error={!!fieldState.error}
+              disabled={!!field.autoFill}
             >
               <MenuItem value="" disabled>
                 -- Select an option --

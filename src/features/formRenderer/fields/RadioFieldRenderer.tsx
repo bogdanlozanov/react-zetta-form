@@ -35,6 +35,7 @@ export const RadioFieldRenderer = ({ field }: Props) => {
               {...controllerField}
               value={controllerField.value || ""}
               onChange={(e) => controllerField.onChange(e.target.value)}
+              aria-disabled={!!field.autoFill}
             >
               {field.options.map((option) => (
                 <FormControlLabel
